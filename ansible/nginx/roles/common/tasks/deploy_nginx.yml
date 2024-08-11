@@ -1,0 +1,17 @@
+- name: Creates directory nginx
+  become: yes
+  ansible.builtin.file:
+    path: /srv/docker/nginx
+    state: directory
+
+- name: Copy Docker Compose file
+  become: yes
+  template:
+    src: docker-compose.yml.j2
+    dest: /srv/docker/nginx/docker-compose.yml
+
+- name: Run container
+  become: yes
+  shell:
+    cmd: "docker-compose up -d"
+    chdir: /srv/docker/nginx/

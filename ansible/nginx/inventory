@@ -1,0 +1,6 @@
+[nginx_server]
+#ips-nginx
+
+[nginx_server:vars]
+
+

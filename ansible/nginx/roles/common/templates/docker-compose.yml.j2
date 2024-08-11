@@ -1,0 +1,30 @@
+version: '3'
+services:
+  nginx-proxy:
+    image: 'nginx:latest'
+    restart: always
+    container_name: nginx-proxy
+    expose:
+      - '8080'
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - network-nginx
+
+  exporter-nginx-proxy:
+    image: nginx/nginx-prometheus-exporter:latest
+    restart: always
+    container_name: exporter-nginx-proxy
+    expose:
+      - 9113
+    networks:
+      - network-nginx
+    command: '-nginx.scrape-uri=http://nginx-proxy:8080/stub_status'
+
+networks:
+  network-nginx:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.10.0/28
+          gateway: 192.168.10.1  

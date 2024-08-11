@@ -1,0 +1,40 @@
+- name: Install docker packages
+  become: yes
+  package:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes 
+  with_items:
+    - apt-transport-https
+    - ca-certificates
+    - curl
+    - software-properties-common
+  tags:
+    - docker
+
+- name: Download get.docker
+  become: yes
+  shell:
+    cmd: "curl -fsSL https://get.docker.com -o get-docker.sh"
+  tags:
+    - docker
+
+- name: Install Docker
+  become: yes
+  shell:
+    cmd: "sh ./get-docker.sh"
+  tags:
+    - docker
+
+- name: Add remote "ubuntu" user to "docker" group
+  shell:
+    cmd: "usermod -aG docker ubuntu"
+  tags:
+    - docker
+
+- name: Install docker-compose
+  become: yes
+  get_url: 
+    url : https://github.com/docker/compose/releases/download/v2.12.2/docker-compose-linux-x86_64
+    dest: /usr/local/bin/docker-compose
+    mode: 'u+x,g+x,o+x'
